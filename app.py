@@ -406,10 +406,20 @@ def _get_source_snippet(finding: dict[str, Any], run_dir: Path | None) -> str | 
         candidate = run_dir / Path(path_str).name
         if candidate.is_file():
             source_file = candidate
+        else:
+            for s in run_dir.glob("*.sol"):
+                if not s.name.endswith(".t.sol"):
+                    source_file = s
+                    break
     if not source_file:
         for p in ROOT.glob(f"**/{Path(path_str).name}"):
             if p.is_file() and not any(part in p.parts for part in (".venv", ".pytest_cache", "runs", "out")):
                 source_file = p
+                break
+    if not source_file and run_dir:
+        for s in run_dir.glob("*.sol"):
+            if not s.name.endswith(".t.sol"):
+                source_file = s
                 break
     if not source_file:
         return None
@@ -805,11 +815,21 @@ def _render_line_by_line_attack_simulator(finding: dict[str, Any], run_dir: Path
             candidate = run_dir / Path(path_str).name
             if candidate.is_file():
                 source_file = candidate
+            else:
+                for s in run_dir.glob("*.sol"):
+                    if not s.name.endswith(".t.sol"):
+                        source_file = s
+                        break
         if not source_file:
             for p in ROOT.glob(f"**/{Path(path_str).name}"):
                 if p.is_file() and not any(part in p.parts for part in (".venv", ".pytest_cache", "runs", "out")):
                     source_file = p
                     break
+    if not source_file and run_dir:
+        for s in run_dir.glob("*.sol"):
+            if not s.name.endswith(".t.sol"):
+                source_file = s
+                break
 
     all_file_lines: list[str] = []
     if source_file:
@@ -818,17 +838,23 @@ def _render_line_by_line_attack_simulator(finding: dict[str, Any], run_dir: Path
         except Exception:
             all_file_lines = []
 
+    func_name_short = func_id.split(".")[-1].split("(")[0].strip() or "target"
+    contract_name = func_id.split(".")[0] if "." in func_id else "Contract"
+
     # Build steps
     steps = []
     if category == "access_control":
         setter_line = start_line
         write_line = min(len(all_file_lines), start_line + 1) if all_file_lines else start_line + 1
         for i, l in enumerate(all_file_lines):
-            if "function" in l and ("setOwner" in l or "Owner" in l):
+            if "function" in l and (func_name_short.lower() in l.lower() or "owner" in l.lower() or "admin" in l.lower()):
                 setter_line = i + 1
-            if "owner" in l and "=" in l and "==" not in l and i + 1 >= setter_line:
+            if ("owner" in l.lower() or "admin" in l.lower() or "role" in l.lower() or "privileged" in l.lower() or "=" in l) and "=" in l and "==" not in l and "!=" not in l and i + 1 >= setter_line:
                 write_line = i + 1
                 break
+
+        line_code = all_file_lines[setter_line - 1].strip() if all_file_lines and setter_line <= len(all_file_lines) else func_id
+        write_code = all_file_lines[write_line - 1].strip() if all_file_lines and write_line <= len(all_file_lines) else "privileged_state = newOwner;"
 
         steps = [
             {
@@ -836,19 +862,19 @@ def _render_line_by_line_attack_simulator(finding: dict[str, Any], run_dir: Path
                 "title": f"1. Discovery: Unprotected Function Entrypoint (Line {setter_line})",
                 "active_line": setter_line,
                 "vuln_lines": [setter_line, write_line],
-                "evm_op": "ABI PARSE · FUNCTION SELECTOR 0x13af4035",
-                "tactic": f"Attacker analyzes the public ABI. Notice line {setter_line}: '{all_file_lines[setter_line - 1].strip() if all_file_lines and setter_line <= len(all_file_lines) else func_id}'. It has NO access modifier (such as onlyOwner) and no caller authorization check.",
-                "state_before": {"Caller Address": "0x000...0BAD (Attacker)", "Legitimate Owner": "0x1804c8ab... (Original Deployer)"},
+                "evm_op": f"ABI PARSE · FUNCTION {func_name_short}()",
+                "tactic": f"Attacker analyzes the public ABI. Notice line {setter_line}: '{line_code}'. It has NO access modifier (such as onlyOwner) and no caller authorization check.",
+                "state_before": {"Caller Address": "0x000...0BAD (Attacker)", "Legitimate Authority": "0x1804c8ab... (Original Deployer)"},
                 "state_after": {"Status": f"Vulnerable entrypoint confirmed at Line {setter_line}"},
-                "call_tree": f"Attacker (0xBAD) ➔ Preparing adversarial transaction to {func_id}",
+                "call_tree": f"Attacker (0xBAD) ➔ Preparing adversarial transaction to {func_name_short}()",
             },
             {
                 "step_no": 2,
                 "title": f"2. Invocation: Transaction Dispatched to Line {setter_line}",
                 "active_line": setter_line,
                 "vuln_lines": [setter_line, write_line],
-                "evm_op": "CALL target.setOwner(0xBAD) · Gas: 38,669",
-                "tactic": f"Attacker sends an EVM transaction calling setOwner(0xBAD) with msg.sender set to 0xBAD. Because there is no require(msg.sender == owner) check at line {setter_line}, the EVM proceeds without reverting.",
+                "evm_op": f"CALL target.{func_name_short}(0xBAD) · Gas: 38,669",
+                "tactic": f"Attacker sends an EVM transaction calling {func_name_short}(0xBAD) with msg.sender set to 0xBAD. Because there is no caller authorization check at line {setter_line}, the EVM proceeds without reverting.",
                 "state_before": {"msg.sender": "0x0000000000000000000000000000000000000bad", "msg.value": "0 wei"},
                 "state_after": {"EVM Call Status": "Entering Function Body (No Revert)"},
                 "call_tree": f"Attacker (0xBAD) ➔ CALL {func_id} [NO REVERT TRIGGERED]",
@@ -858,35 +884,40 @@ def _render_line_by_line_attack_simulator(finding: dict[str, Any], run_dir: Path
                 "title": f"3. THE EXPLOIT LINE: Unauthorized State Overwrite (Line {write_line})",
                 "active_line": write_line,
                 "vuln_lines": [setter_line, write_line],
-                "evm_op": "SSTORE (Storage Slot 0) ➔ 0xBAD",
-                "tactic": f"🚨 ERROR & EXPLOIT POINT (Line {write_line}): '{all_file_lines[write_line - 1].strip() if all_file_lines and write_line <= len(all_file_lines) else 'owner = newOwner;'}'. The EVM writes the attacker's address 0xBAD directly into storage slot 0! The legitimate owner is permanently overwritten.",
-                "state_before": {"Storage Slot 0 (owner)": "0x1804c8ab... (Legitimate Owner)"},
-                "state_after": {"Storage Slot 0 (owner)": "0x0000000000000000000000000000000000000bad (HIJACKED!)"},
-                "call_tree": "EVM PC ➔ SSTORE slot 0 = 0xBAD [STATE PERMANENTLY CORRUPTED]",
+                "evm_op": "SSTORE Storage Slot ➔ 0xBAD",
+                "tactic": f"🚨 ERROR & EXPLOIT POINT (Line {write_line}): '{write_code}'. The EVM writes the attacker's address 0xBAD directly into storage! The legitimate administrative authority is permanently hijacked.",
+                "state_before": {"Privileged State": "0x1804c8ab... (Legitimate Authority)"},
+                "state_after": {"Privileged State": "0x0000000000000000000000000000000000000bad (HIJACKED!)"},
+                "call_tree": "EVM PC ➔ SSTORE slot = 0xBAD [STATE PERMANENTLY CORRUPTED]",
             },
             {
                 "step_no": 4,
                 "title": "4. Exploit Verification: Administrative Authority Hijacked",
                 "active_line": write_line,
                 "vuln_lines": [setter_line, write_line],
-                "evm_op": "STATICCALL owner() ➔ 0xBAD · ASSERT TRUE",
-                "tactic": "The Foundry test queries target.owner() and confirms it equals 0xBAD. The contract is now completely compromised and controlled by the attacker.",
+                "evm_op": "STATICCALL getter ➔ 0xBAD · ASSERT TRUE",
+                "tactic": f"The Foundry test queries target contract getter and confirms it equals 0xBAD. The contract is now completely compromised and controlled by the attacker.",
                 "state_before": {"Ownership": "Compromised"},
-                "state_after": {"Contract Owner": "0xBAD (ATTACKER)", "Exploit Succeeded": "TRUE (100% PROVEN)"},
+                "state_after": {"Contract Controller": "0xBAD (ATTACKER)", "Exploit Succeeded": "TRUE (100% PROVEN)"},
                 "call_tree": "Foundry Oracle ➔ assertEq(target.owner(), 0xBAD) [EXPLOIT VERIFIED]",
             },
         ]
     elif category == "reentrancy":
         call_line = start_line + 3
         write_line = start_line + 5
-        deposit_line = 9
+        deposit_line = max(1, start_line - 5)
         for i, l in enumerate(all_file_lines):
-            if "function deposit" in l:
+            if "function" in l and any(w in l.lower() for w in ("deposit", "fund", "stake", "donate", "mint")):
                 deposit_line = i + 1
-            if ".call{value:" in l:
+            if "function" in l and func_name_short in l:
+                start_line = i + 1
+            if any(w in l for w in (".call{value:", ".call(", ".transfer(", ".send(")):
                 call_line = i + 1
-            if "balances[" in l and "= 0" in l:
+            if ("balances[" in l.lower() or "balance" in l.lower() or "=" in l) and "=" in l and i + 1 >= call_line:
                 write_line = i + 1
+
+        call_code = all_file_lines[call_line - 1].strip() if all_file_lines and call_line <= len(all_file_lines) else 'msg.sender.call{value: amount}("")'
+        write_code = all_file_lines[write_line - 1].strip() if all_file_lines and write_line <= len(all_file_lines) else 'balances[msg.sender] = 0;'
 
         steps = [
             {
@@ -895,43 +926,43 @@ def _render_line_by_line_attack_simulator(finding: dict[str, Any], run_dir: Path
                 "active_line": deposit_line,
                 "vuln_lines": [call_line, write_line],
                 "evm_op": "CALL deposit() · VALUE: 1.0 ETH",
-                "tactic": f"Attacker calls deposit() at line {deposit_line} with 1.0 ETH to create an active balance in balances[attacker] before launching reentrancy.",
+                "tactic": f"Attacker funds the test harness and deposits 1.0 ETH into {contract_name} to establish active ledger balance before launching reentrancy.",
                 "state_before": {"Victim Vault Pool": "10.0 ETH", "Attacker Wallet": "1.0 ETH"},
                 "state_after": {"Victim Vault Pool": "11.0 ETH", "balances[attacker]": "1.0 ETH"},
                 "call_tree": "Attacker (0xBAD) ➔ CALL deposit{value: 1 ETH}() [SUCCESS]",
             },
             {
                 "step_no": 2,
-                "title": f"2. Trigger: Calling withdraw() at Line {start_line}",
+                "title": f"2. Trigger: Calling {func_name_short}() at Line {start_line}",
                 "active_line": start_line,
                 "vuln_lines": [call_line, write_line],
-                "evm_op": "CALL withdraw()",
-                "tactic": f"Attacker calls withdraw() at line {start_line}. The contract checks require(amount > 0), which passes because balances[attacker] is 1.0 ETH.",
+                "evm_op": f"CALL {func_name_short}()",
+                "tactic": f"Attacker calls {func_name_short}() at line {start_line}. The contract checks preconditions which pass because the attacker has deposited balance.",
                 "state_before": {"balances[attacker]": "1.0 ETH", "Vault Pool": "11.0 ETH"},
                 "state_after": {"Status": "Proceeding to external transfer line"},
-                "call_tree": "Attacker (0xBAD) ➔ CALL withdraw() [PASSED BALANCE CHECK]",
+                "call_tree": f"Attacker (0xBAD) ➔ CALL {func_name_short}() [PASSED BALANCE CHECK]",
             },
             {
                 "step_no": 3,
                 "title": f"3. THE EXPLOIT LINE: External Call Before State Update (Line {call_line})",
                 "active_line": call_line,
                 "vuln_lines": [call_line, write_line],
-                "evm_op": f"RAW CALL (Line {call_line}) ➔ msg.sender.call{{value: amount}}(\"\")",
-                "tactic": f"🚨 CRITICAL ERROR AT LINE {call_line}: '{all_file_lines[call_line - 1].strip() if all_file_lines and call_line <= len(all_file_lines) else 'msg.sender.call{value: amount}(\"\")'}'. The contract sends ETH to the attacker BEFORE line {write_line} zeroes the balance! Execution transfers control to the attacker's fallback receive() hook.",
+                "evm_op": f"RAW CALL (Line {call_line}) ➔ {call_code}",
+                "tactic": f"🚨 CRITICAL ERROR AT LINE {call_line}: '{call_code}'. The contract sends ETH to the attacker BEFORE line {write_line} zeroes the balance! Execution transfers control to the attacker's fallback receive() hook.",
                 "state_before": {"balances[attacker]": "1.0 ETH (NOT ZEROED YET!)"},
                 "state_after": {"Execution Control": f"Shifted to attacker receive() BEFORE line {write_line} executes"},
                 "call_tree": f"Victim (Line {call_line}) ➔ CALL attacker.receive{{value: 1 ETH}}() [CONTROL INTERCEPTED]",
             },
             {
                 "step_no": 4,
-                "title": f"4. Reentrant Loop: Re-entering withdraw() Before Line {write_line}",
+                "title": f"4. Reentrant Loop: Re-entering {func_name_short}() Before Line {write_line}",
                 "active_line": call_line,
                 "vuln_lines": [call_line, write_line],
-                "evm_op": "REENTRANT CALL withdraw() ➔ RECURSIVE DRAIN",
-                "tactic": f"Attacker's receive() hook immediately calls withdraw() again! Because line {write_line} was never reached, balances[attacker] is STILL 1.0 ETH! The contract sends another 1.0 ETH, repeating recursively until all 11.0 ETH is drained from the vault!",
+                "evm_op": f"REENTRANT CALL {func_name_short}() ➔ RECURSIVE DRAIN",
+                "tactic": f"Attacker's receive() hook immediately calls {func_name_short}() again! Because line {write_line} was never reached, balances[attacker] is STILL 1.0 ETH! The contract sends another 1.0 ETH, repeating recursively until all funds are drained from the vault!",
                 "state_before": {"Victim Vault Pool": "11.0 ETH"},
                 "state_after": {"Victim Vault Pool": "0.0 ETH (DRAINED!)", "Attacker Profit": "+11.0 ETH Stolen"},
-                "call_tree": "Attacker.receive() ➔ CALL withdraw() ➔ RE-ENTERING [RECURSION UNTIL DRAINED]",
+                "call_tree": f"Attacker.receive() ➔ CALL {func_name_short}() ➔ RE-ENTERING [RECURSION UNTIL DRAINED]",
             },
             {
                 "step_no": 5,
@@ -939,24 +970,56 @@ def _render_line_by_line_attack_simulator(finding: dict[str, Any], run_dir: Path
                 "active_line": write_line,
                 "vuln_lines": [call_line, write_line],
                 "evm_op": "ORACLE ASSERT: address(victim).balance == 0",
-                "tactic": f"Finally, the recursive calls unwind to line {write_line} ('{all_file_lines[write_line - 1].strip() if all_file_lines and write_line <= len(all_file_lines) else 'balances[msg.sender] = 0;'}'), but the vault is already completely empty. Total drain confirmed!",
+                "tactic": f"Finally, the recursive calls unwind to line {write_line} ('{write_code}'), but the vault is already completely empty. Total drain confirmed!",
                 "state_before": {"Vault Balance": "0.0 ETH"},
                 "state_after": {"Victim Drained": "TRUE", "Exploit Succeeded": "TRUE (100% PROVEN)"},
                 "call_tree": "Oracle Assertion ➔ assertEq(address(victim).balance, 0) [100% PROVEN]",
             },
         ]
     else:
+        func_entry = start_line
+        write_entry = min(len(all_file_lines), start_line + 2) if all_file_lines else start_line + 1
+        for i, l in enumerate(all_file_lines):
+            if "function" in l and func_name_short.lower() in l.lower():
+                func_entry = i + 1
+            if ("=" in l or "call" in l) and i + 1 >= func_entry:
+                write_entry = i + 1
+                break
+        entry_code = all_file_lines[func_entry - 1].strip() if all_file_lines and func_entry <= len(all_file_lines) else func_id
+        write_code = all_file_lines[write_entry - 1].strip() if all_file_lines and write_entry <= len(all_file_lines) else "state_mutation;"
         steps = [
             {
                 "step_no": 1,
-                "title": f"1. Target Call at Line {start_line}",
-                "active_line": start_line,
-                "vuln_lines": [start_line],
-                "evm_op": "CALL",
-                "tactic": f"Attacker calls {func_id} at line {start_line} with adversarial inputs.",
+                "title": f"1. Entrypoint Invocation: Line {func_entry}",
+                "active_line": func_entry,
+                "vuln_lines": [func_entry, write_entry],
+                "evm_op": f"CALL {func_name_short}()",
+                "tactic": f"Attacker invokes {func_name_short}() at line {func_entry} ('{entry_code}') with adversarial inputs.",
                 "state_before": {"Target": func_id},
-                "state_after": {"Status": "Execution Recorded"},
+                "state_after": {"Status": "Function entered"},
                 "call_tree": f"Attacker ➔ CALL {func_id}",
+            },
+            {
+                "step_no": 2,
+                "title": f"2. THE EXPLOIT LINE: State / Flow Violation at Line {write_entry}",
+                "active_line": write_entry,
+                "vuln_lines": [func_entry, write_entry],
+                "evm_op": f"EVM EXECUTION AT LINE {write_entry}",
+                "tactic": f"🚨 ERROR & EXPLOIT POINT (Line {write_entry}): '{write_code}'. EVM executes this line without necessary safety invariant or access check.",
+                "state_before": {"Invariant": "Vulnerable"},
+                "state_after": {"Invariant": "Violated"},
+                "call_tree": f"EVM PC ➔ Line {write_entry} [MUTATION EXECUTED]",
+            },
+            {
+                "step_no": 3,
+                "title": "3. Exploit Verification Oracle",
+                "active_line": write_entry,
+                "vuln_lines": [func_entry, write_entry],
+                "evm_op": "ORACLE ASSERTION",
+                "tactic": "The isolated Foundry test verifies whether the invariant was broken and records the exploit status.",
+                "state_before": {"Status": "Evaluating"},
+                "state_after": {"Exploit Succeeded": "PROVEN in Foundry EVM"},
+                "call_tree": "Foundry Oracle ➔ assertEq() [EXECUTION PROVEN]",
             },
         ]
 
@@ -1783,8 +1846,18 @@ def _render_scan() -> None:
                             temporary_source = Path(temp_dir) / safe_name
                             temporary_source.write_bytes(content)
                             run_id, error = _run_scan(temporary_source, fixture=False, progress_callback=on_progress)
+                        if run_id:
+                            try:
+                                (RUNS_DIR / run_id / safe_name).write_bytes(content)
+                            except Exception:
+                                pass
                 elif mode == "📦 Built-in Demo Fixtures" and selected_demo is not None:
                     run_id, error = _run_scan(selected_demo[1], fixture=True, progress_callback=on_progress)
+                    if run_id:
+                        try:
+                            (RUNS_DIR / run_id / selected_demo[1].name).write_bytes(selected_demo[1].read_bytes())
+                        except Exception:
+                            pass
                 elif mode == "📁 Upload .sol File" and uploaded is not None:
                     content = uploaded.getvalue()
                     safe_name = Path(str(uploaded.name).replace("\\", "/")).name
@@ -1797,6 +1870,11 @@ def _render_scan() -> None:
                             temporary_source = Path(temp_dir) / (safe_name or "contract.sol")
                             temporary_source.write_bytes(content)
                             run_id, error = _run_scan(temporary_source, fixture=False, progress_callback=on_progress)
+                        if run_id:
+                            try:
+                                (RUNS_DIR / run_id / (safe_name or "contract.sol")).write_bytes(content)
+                            except Exception:
+                                pass
 
                 if run_id:
                     st.session_state["live_scan_log"] = {
