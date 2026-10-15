@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import "forge-std/Test.sol";
+import "forge-std/console2.sol";
+import { {{ contract_name }} } from "../src/input.sol";
+
+contract MicroscopeRegressionTest is Test {
+    receive() external payable {}
+
+    function test_microscope_regression() public {
+        {{ contract_name }} target = new {{ contract_name }}();
+        vm.deal(address(this), 1 ether);
+        target.{{ deposit_name }}{value: 1 ether}();
+        uint256 balanceBeforeWithdraw = address(this).balance;
+        bool withdrawSucceeded;
+        try target.{{ withdraw_name }}() {
+            withdrawSucceeded = true;
+        } catch {}
+        bool passed = withdrawSucceeded && address(this).balance == balanceBeforeWithdraw + 1 ether
+            && target.{{ balance_getter }}(address(this)) == 0;
+        string memory result = string.concat(
+            "MICROSCOPE_RESULT {\"class\":\"reentrancy_regression\",\"regression_passed\":",
+            passed ? "true" : "false", ",\"steps\":[]}"
+        );
+        console2.log(result);
+    }
+}

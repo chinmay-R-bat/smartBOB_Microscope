@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import "forge-std/Test.sol";
+import "forge-std/console2.sol";
+import { {{ contract_name }} } from "../src/input.sol";
+
+contract MicroscopeAttackTest is Test {
+    address private constant RANDOM = address(0xBAD);
+
+    function test_microscope_attack() public {
+        {{ contract_name }} target = new {{ contract_name }}();
+        vm.prank(RANDOM);
+        try target.{{ function_name }}({{ arguments | join(", ") }}) {} catch {}
+
+        bool succeeded = target.{{ getter_name }}() == RANDOM;
+        string memory result = string.concat(
+            "MICROSCOPE_RESULT {\"class\":\"access_control\",\"exploit_succeeded\":",
+            succeeded ? "true" : "false", ",\"steps\":[]}"
+        );
+        console2.log(result);
+    }
+}

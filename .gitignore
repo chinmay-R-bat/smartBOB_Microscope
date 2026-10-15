@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+.venv/
+__pycache__/
+.pytest_cache/
+runs/
+bench/raw_runs/
+bench/unseen/human_demo.sol
+cache/

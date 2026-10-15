@@ -1,0 +1,15 @@
+Before implementation, audit the active documentation and repository only. Do not edit application code during this step.
+
+Read README.md, MICROSCOPE_PLAN.md, AGENTS.md, CURRENT_STATUS.md, KNOWN_LIMITATIONS.md, SUPABASE_GEMINI_INTEGRATION.md, and the full CODEX_BUILD_SPEC.md. Inspect the actual working tree and report:
+1. Which documentation files exist and whether older active documents conflict.
+2. Whether the actual repository matches the environment and baseline results in CURRENT_STATUS.md.
+3. Whether the active documents agree on the local analysis architecture, Supabase responsibilities, Gemini boundaries, and source privacy.
+4. Any critical contradiction that must be resolved before Phase P1.
+5. Whether the 10-hour schedule and phase names in CODEX_BUILD_SPEC.md section 11 (P0, P1, P2, P3, P4a, P4b, P4c, P5, P6) agree with MICROSCOPE_PLAN.md, CURRENT_STATUS.md, AGENTS.md and SUPABASE_GEMINI_INTEGRATION.md, and whether the no_privileged_var_inferred notice (spec section 6.4, test case 17) conflicts with anything.
+6. How long the audit took, against its 30-minute time box.
+
+Treat CODEX_BUILD_SPEC.md as the technical authority for analysis/testing, MICROSCOPE_PLAN.md as the product authority, and SUPABASE_GEMINI_INTEGRATION.md as the authority for the approved backend/AI boundaries. Supabase Auth/Postgres and Gemini explanation-only are active requirements, but they must not be implemented during this audit or P1.
+
+Stop after the audit and wait for approval.
+
+LOCAL-FIRST RULE: During this audit and Phase P1, do not call Supabase/Gemini or any external service. Do not commit, push, change Git remotes, deploy, or upload files. In later explicitly approved phases, Supabase is permitted only for Auth/report persistence and Gemini only for evidence-grounded explanations. Keep contract analysis local and never upload source by default.

@@ -1,0 +1,81 @@
+{
+  "schema": "microscope-unseen-demo-result-v1",
+  "fixture": false,
+  "source": "unseen/human_demo.sol",
+  "source_sha256": "869c77477fd84fe2b268583c852f2fb4c80e41f12414f116a8a619126fdac0fe",
+  "run_dir": "bench/raw_runs/20261014T161754.808864Z-869c7747",
+  "findings": [
+    {
+      "id": "ANALYSIS-inconclusive",
+      "category": "analysis",
+      "status": "inconclusive",
+      "function_id": "analysis",
+      "src": {
+        "path": "input.sol",
+        "start_line": 1,
+        "end_line": 1
+      },
+      "rule": "ANALYSIS-ERROR",
+      "evidence": [],
+      "assumptions": [],
+      "unknown_reasons": [
+        "Static analysis could not load this Solidity input. detector fallback: slither CLI produced no JSON:   |     ^^^^^^^^"
+      ],
+      "detector_corroboration": "unknown",
+      "template_support": "unknown",
+      "template_kind": null,
+      "original_result": {
+        "status": "inconclusive",
+        "reason": "static analysis was inconclusive; no original attack was run",
+        "steps": []
+      },
+      "patch_kind": null,
+      "patch_reason": "no patch: no static candidate was established",
+      "patched_result": {
+        "status": null,
+        "reason": null
+      },
+      "regression_result": {
+        "status": null,
+        "reason": null
+      }
+    }
+  ],
+  "result": [
+    {
+      "id": "ANALYSIS-inconclusive",
+      "category": "analysis",
+      "status": "inconclusive",
+      "function_id": "analysis",
+      "src": {
+        "path": "input.sol",
+        "start_line": 1,
+        "end_line": 1
+      },
+      "rule": "ANALYSIS-ERROR",
+      "evidence": [],
+      "assumptions": [],
+      "unknown_reasons": [
+        "Static analysis could not load this Solidity input. detector fallback: slither CLI produced no JSON:   |     ^^^^^^^^"
+      ],
+      "detector_corroboration": "unknown",
+      "template_support": "unknown",
+      "template_kind": null,
+      "original_result": {
+        "status": "inconclusive",
+        "reason": "static analysis was inconclusive; no original attack was run",
+        "steps": []
+      },
+      "patch_kind": null,
+      "patch_reason": "no patch: no static candidate was established",
+      "patched_result": {
+        "status": null,
+        "reason": null
+      },
+      "regression_result": {
+        "status": null,
+        "reason": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import "forge-std/Test.sol";
+import "forge-std/console2.sol";
+import { {{ contract_name }} } from "../src/input.sol";
+
+contract MicroscopeRegressionTest is Test {
+    function test_microscope_regression() public {
+        {{ contract_name }} target = new {{ contract_name }}();
+        address nextOwner = address(0xBEEF);
+        bool callSucceeded;
+        try target.{{ function_name }}({{ next_owner_arguments | join(", ") }}) {
+            callSucceeded = true;
+        } catch {}
+        bool passed = callSucceeded && target.{{ getter_name }}() == nextOwner;
+        string memory result = string.concat(
+            "MICROSCOPE_RESULT {\"class\":\"access_control_regression\",\"regression_passed\":",
+            passed ? "true" : "false", ",\"steps\":[]}"
+        );
+        console2.log(result);
+    }
+}

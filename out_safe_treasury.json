@@ -1,0 +1,488 @@
+{
+  "success": true,
+  "error": null,
+  "results": {
+    "detectors": [
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "setOwner",
+            "source_mapping": {
+              "start": 366,
+              "length": 88,
+              "filename_relative": "src/fixed/SafeTreasury.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+              "filename_short": "src/fixed/SafeTreasury.sol",
+              "is_dependency": false,
+              "lines": [
+                19,
+                20,
+                21
+              ],
+              "starting_column": 5,
+              "ending_column": 6
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "SafeTreasury",
+                "source_mapping": {
+                  "start": 117,
+                  "length": 502,
+                  "filename_relative": "src/fixed/SafeTreasury.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                  "filename_short": "src/fixed/SafeTreasury.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25,
+                    26,
+                    27
+                  ],
+                  "starting_column": 1,
+                  "ending_column": 2
+                }
+              },
+              "signature": "setOwner(address)"
+            }
+          },
+          {
+            "type": "node",
+            "name": "owner = newOwner",
+            "source_mapping": {
+              "start": 431,
+              "length": 16,
+              "filename_relative": "src/fixed/SafeTreasury.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+              "filename_short": "src/fixed/SafeTreasury.sol",
+              "is_dependency": false,
+              "lines": [
+                20
+              ],
+              "starting_column": 9,
+              "ending_column": 25
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "function",
+                "name": "setOwner",
+                "source_mapping": {
+                  "start": 366,
+                  "length": 88,
+                  "filename_relative": "src/fixed/SafeTreasury.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                  "filename_short": "src/fixed/SafeTreasury.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    19,
+                    20,
+                    21
+                  ],
+                  "starting_column": 5,
+                  "ending_column": 6
+                },
+                "type_specific_fields": {
+                  "parent": {
+                    "type": "contract",
+                    "name": "SafeTreasury",
+                    "source_mapping": {
+                      "start": 117,
+                      "length": 502,
+                      "filename_relative": "src/fixed/SafeTreasury.sol",
+                      "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                      "filename_short": "src/fixed/SafeTreasury.sol",
+                      "is_dependency": false,
+                      "lines": [
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26,
+                        27
+                      ],
+                      "starting_column": 1,
+                      "ending_column": 2
+                    }
+                  },
+                  "signature": "setOwner(address)"
+                }
+              }
+            }
+          }
+        ],
+        "description": "SafeTreasury.setOwner(address) (src/fixed/SafeTreasury.sol#19-21) should emit an event for: \n\t- owner = newOwner (src/fixed/SafeTreasury.sol#20) \n",
+        "markdown": "[SafeTreasury.setOwner(address)](src/fixed/SafeTreasury.sol#L19-L21) should emit an event for: \n\t- [owner = newOwner](src/fixed/SafeTreasury.sol#L20) \n",
+        "first_markdown_element": "src/fixed/SafeTreasury.sol#L19-L21",
+        "id": "560dde81d2b0a05e1f4e6b71df73ddccc9941af871ca0e41e36b53c2d02f4933",
+        "check": "events-access",
+        "impact": "Low",
+        "confidence": "Medium",
+        "reference": "https://github.com/crytic/slither/wiki/Detector-Documentation#missing-events-access-control"
+      },
+      {
+        "elements": [
+          {
+            "type": "variable",
+            "name": "newOwner",
+            "source_mapping": {
+              "start": 384,
+              "length": 16,
+              "filename_relative": "src/fixed/SafeTreasury.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+              "filename_short": "src/fixed/SafeTreasury.sol",
+              "is_dependency": false,
+              "lines": [
+                19
+              ],
+              "starting_column": 23,
+              "ending_column": 39
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "function",
+                "name": "setOwner",
+                "source_mapping": {
+                  "start": 366,
+                  "length": 88,
+                  "filename_relative": "src/fixed/SafeTreasury.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                  "filename_short": "src/fixed/SafeTreasury.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    19,
+                    20,
+                    21
+                  ],
+                  "starting_column": 5,
+                  "ending_column": 6
+                },
+                "type_specific_fields": {
+                  "parent": {
+                    "type": "contract",
+                    "name": "SafeTreasury",
+                    "source_mapping": {
+                      "start": 117,
+                      "length": 502,
+                      "filename_relative": "src/fixed/SafeTreasury.sol",
+                      "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                      "filename_short": "src/fixed/SafeTreasury.sol",
+                      "is_dependency": false,
+                      "lines": [
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26,
+                        27
+                      ],
+                      "starting_column": 1,
+                      "ending_column": 2
+                    }
+                  },
+                  "signature": "setOwner(address)"
+                }
+              }
+            }
+          },
+          {
+            "type": "node",
+            "name": "owner = newOwner",
+            "source_mapping": {
+              "start": 431,
+              "length": 16,
+              "filename_relative": "src/fixed/SafeTreasury.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+              "filename_short": "src/fixed/SafeTreasury.sol",
+              "is_dependency": false,
+              "lines": [
+                20
+              ],
+              "starting_column": 9,
+              "ending_column": 25
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "function",
+                "name": "setOwner",
+                "source_mapping": {
+                  "start": 366,
+                  "length": 88,
+                  "filename_relative": "src/fixed/SafeTreasury.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                  "filename_short": "src/fixed/SafeTreasury.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    19,
+                    20,
+                    21
+                  ],
+                  "starting_column": 5,
+                  "ending_column": 6
+                },
+                "type_specific_fields": {
+                  "parent": {
+                    "type": "contract",
+                    "name": "SafeTreasury",
+                    "source_mapping": {
+                      "start": 117,
+                      "length": 502,
+                      "filename_relative": "src/fixed/SafeTreasury.sol",
+                      "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                      "filename_short": "src/fixed/SafeTreasury.sol",
+                      "is_dependency": false,
+                      "lines": [
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26,
+                        27
+                      ],
+                      "starting_column": 1,
+                      "ending_column": 2
+                    }
+                  },
+                  "signature": "setOwner(address)"
+                }
+              }
+            }
+          }
+        ],
+        "description": "SafeTreasury.setOwner(address).newOwner (src/fixed/SafeTreasury.sol#19) lacks a zero-check on :\n\t\t- owner = newOwner (src/fixed/SafeTreasury.sol#20)\n",
+        "markdown": "[SafeTreasury.setOwner(address).newOwner](src/fixed/SafeTreasury.sol#L19) lacks a zero-check on :\n\t\t- [owner = newOwner](src/fixed/SafeTreasury.sol#L20)\n",
+        "first_markdown_element": "src/fixed/SafeTreasury.sol#L19",
+        "id": "85659b8bc033ce29df740ac3b8e374bf651440f8a96987309d1f83f6ebc8bbae",
+        "check": "missing-zero-check",
+        "impact": "Low",
+        "confidence": "Medium",
+        "reference": "https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "withdrawAll",
+            "source_mapping": {
+              "start": 460,
+              "length": 157,
+              "filename_relative": "src/fixed/SafeTreasury.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+              "filename_short": "src/fixed/SafeTreasury.sol",
+              "is_dependency": false,
+              "lines": [
+                23,
+                24,
+                25,
+                26
+              ],
+              "starting_column": 5,
+              "ending_column": 6
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "SafeTreasury",
+                "source_mapping": {
+                  "start": 117,
+                  "length": 502,
+                  "filename_relative": "src/fixed/SafeTreasury.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                  "filename_short": "src/fixed/SafeTreasury.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25,
+                    26,
+                    27
+                  ],
+                  "starting_column": 1,
+                  "ending_column": 2
+                }
+              },
+              "signature": "withdrawAll()"
+            }
+          },
+          {
+            "type": "node",
+            "name": "(ok,None) = owner.call{value: address(this).balance}()",
+            "source_mapping": {
+              "start": 512,
+              "length": 58,
+              "filename_relative": "src/fixed/SafeTreasury.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+              "filename_short": "src/fixed/SafeTreasury.sol",
+              "is_dependency": false,
+              "lines": [
+                24
+              ],
+              "starting_column": 9,
+              "ending_column": 67
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "function",
+                "name": "withdrawAll",
+                "source_mapping": {
+                  "start": 460,
+                  "length": 157,
+                  "filename_relative": "src/fixed/SafeTreasury.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                  "filename_short": "src/fixed/SafeTreasury.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    23,
+                    24,
+                    25,
+                    26
+                  ],
+                  "starting_column": 5,
+                  "ending_column": 6
+                },
+                "type_specific_fields": {
+                  "parent": {
+                    "type": "contract",
+                    "name": "SafeTreasury",
+                    "source_mapping": {
+                      "start": 117,
+                      "length": 502,
+                      "filename_relative": "src/fixed/SafeTreasury.sol",
+                      "filename_absolute": "/home/chinmay/microscope/src/fixed/SafeTreasury.sol",
+                      "filename_short": "src/fixed/SafeTreasury.sol",
+                      "is_dependency": false,
+                      "lines": [
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26,
+                        27
+                      ],
+                      "starting_column": 1,
+                      "ending_column": 2
+                    }
+                  },
+                  "signature": "withdrawAll()"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Low level call in SafeTreasury.withdrawAll() (src/fixed/SafeTreasury.sol#23-26):\n\t- (ok,None) = owner.call{value: address(this).balance}() (src/fixed/SafeTreasury.sol#24)\n",
+        "markdown": "Low level call in [SafeTreasury.withdrawAll()](src/fixed/SafeTreasury.sol#L23-L26):\n\t- [(ok,None) = owner.call{value: address(this).balance}()](src/fixed/SafeTreasury.sol#L24)\n",
+        "first_markdown_element": "src/fixed/SafeTreasury.sol#L23-L26",
+        "id": "b6ac834d0b87cdaa0098500e4327baa469cf07dfe17afc08f0a1693a68c67fe5",
+        "check": "low-level-calls",
+        "impact": "Informational",
+        "confidence": "High",
+        "reference": "https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls"
+      }
+    ]
+  }
+}

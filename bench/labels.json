@@ -1,0 +1,49 @@
+{
+  "schema": "microscope-mini-benchmark-labels-v1",
+  "purpose": "Small self-authored held-out illustration; labels are ground truth, not scanner inputs.",
+  "scanner_freeze": "scanner-freeze.sha256",
+  "cases": [
+    {
+      "id": "RE-BUG-01",
+      "source": "contracts/reentrancy_buggy.sol",
+      "category": "reentrancy",
+      "ground_truth": "vulnerable",
+      "ground_truth_note": "Withdrawal sends ETH before clearing the caller's credit."
+    },
+    {
+      "id": "RE-SAFE-CEI-01",
+      "source": "contracts/reentrancy_safe_cei.sol",
+      "category": "reentrancy",
+      "ground_truth": "safe_lookalike",
+      "ground_truth_note": "Withdrawal clears the caller's credit before the external ETH call."
+    },
+    {
+      "id": "RE-SAFE-LOCK-01",
+      "source": "contracts/reentrancy_safe_lock.sol",
+      "category": "reentrancy",
+      "ground_truth": "safe_lookalike",
+      "ground_truth_note": "Withdrawal uses a stateful mutex around the external ETH call."
+    },
+    {
+      "id": "AC-BUG-01",
+      "source": "contracts/access_control_buggy.sol",
+      "category": "access_control",
+      "ground_truth": "vulnerable",
+      "ground_truth_note": "Any caller can replace the administrator recorded in privileged state."
+    },
+    {
+      "id": "AC-SAFE-MODIFIER-01",
+      "source": "contracts/access_control_safe_modifier.sol",
+      "category": "access_control",
+      "ground_truth": "safe_lookalike",
+      "ground_truth_note": "The administrator mutation is guarded by a sender-to-admin modifier."
+    },
+    {
+      "id": "AC-SAFE-CONSTRUCTOR-01",
+      "source": "contracts/access_control_safe_constructor_only.sol",
+      "category": "access_control",
+      "ground_truth": "safe_lookalike",
+      "ground_truth_note": "Administrator state is set only during construction; there is no external state mutation."
+    }
+  ]
+}

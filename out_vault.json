@@ -1,0 +1,381 @@
+{
+  "success": true,
+  "error": null,
+  "results": {
+    "detectors": [
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "withdraw",
+            "source_mapping": {
+              "start": 341,
+              "length": 340,
+              "filename_relative": "src/vulnerable/VulnerableVault.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+              "filename_short": "src/vulnerable/VulnerableVault.sol",
+              "is_dependency": false,
+              "lines": [
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19
+              ],
+              "starting_column": 5,
+              "ending_column": 6
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "VulnerableVault",
+                "source_mapping": {
+                  "start": 168,
+                  "length": 515,
+                  "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                  "filename_short": "src/vulnerable/VulnerableVault.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20
+                  ],
+                  "starting_column": 1,
+                  "ending_column": 2
+                }
+              },
+              "signature": "withdraw()"
+            }
+          },
+          {
+            "type": "node",
+            "name": "(ok,None) = msg.sender.call{value: amount}()",
+            "source_mapping": {
+              "start": 479,
+              "length": 48,
+              "filename_relative": "src/vulnerable/VulnerableVault.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+              "filename_short": "src/vulnerable/VulnerableVault.sol",
+              "is_dependency": false,
+              "lines": [
+                16
+              ],
+              "starting_column": 9,
+              "ending_column": 57
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "function",
+                "name": "withdraw",
+                "source_mapping": {
+                  "start": 341,
+                  "length": 340,
+                  "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                  "filename_short": "src/vulnerable/VulnerableVault.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19
+                  ],
+                  "starting_column": 5,
+                  "ending_column": 6
+                },
+                "type_specific_fields": {
+                  "parent": {
+                    "type": "contract",
+                    "name": "VulnerableVault",
+                    "source_mapping": {
+                      "start": 168,
+                      "length": 515,
+                      "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                      "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                      "filename_short": "src/vulnerable/VulnerableVault.sol",
+                      "is_dependency": false,
+                      "lines": [
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20
+                      ],
+                      "starting_column": 1,
+                      "ending_column": 2
+                    }
+                  },
+                  "signature": "withdraw()"
+                }
+              }
+            },
+            "additional_fields": {
+              "underlying_type": "external_calls"
+            }
+          },
+          {
+            "type": "node",
+            "name": "balances[msg.sender] = 0",
+            "source_mapping": {
+              "start": 604,
+              "length": 24,
+              "filename_relative": "src/vulnerable/VulnerableVault.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+              "filename_short": "src/vulnerable/VulnerableVault.sol",
+              "is_dependency": false,
+              "lines": [
+                18
+              ],
+              "starting_column": 9,
+              "ending_column": 33
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "function",
+                "name": "withdraw",
+                "source_mapping": {
+                  "start": 341,
+                  "length": 340,
+                  "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                  "filename_short": "src/vulnerable/VulnerableVault.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19
+                  ],
+                  "starting_column": 5,
+                  "ending_column": 6
+                },
+                "type_specific_fields": {
+                  "parent": {
+                    "type": "contract",
+                    "name": "VulnerableVault",
+                    "source_mapping": {
+                      "start": 168,
+                      "length": 515,
+                      "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                      "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                      "filename_short": "src/vulnerable/VulnerableVault.sol",
+                      "is_dependency": false,
+                      "lines": [
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20
+                      ],
+                      "starting_column": 1,
+                      "ending_column": 2
+                    }
+                  },
+                  "signature": "withdraw()"
+                }
+              }
+            },
+            "additional_fields": {
+              "underlying_type": "variables_written",
+              "variable_name": "balances"
+            }
+          }
+        ],
+        "description": "Reentrancy in VulnerableVault.withdraw() (src/vulnerable/VulnerableVault.sol#13-19):\n\tExternal calls:\n\t- (ok,None) = msg.sender.call{value: amount}() (src/vulnerable/VulnerableVault.sol#16)\n\tState variables written after the call(s):\n\t- balances[msg.sender] = 0 (src/vulnerable/VulnerableVault.sol#18)\n\tVulnerableVault.balances (src/vulnerable/VulnerableVault.sol#7) can be used in cross function reentrancies:\n\t- VulnerableVault.balances (src/vulnerable/VulnerableVault.sol#7)\n\t- VulnerableVault.deposit() (src/vulnerable/VulnerableVault.sol#9-11)\n\t- VulnerableVault.withdraw() (src/vulnerable/VulnerableVault.sol#13-19)\n",
+        "markdown": "Reentrancy in [VulnerableVault.withdraw()](src/vulnerable/VulnerableVault.sol#L13-L19):\n\tExternal calls:\n\t- [(ok,None) = msg.sender.call{value: amount}()](src/vulnerable/VulnerableVault.sol#L16)\n\tState variables written after the call(s):\n\t- [balances[msg.sender] = 0](src/vulnerable/VulnerableVault.sol#L18)\n\t[VulnerableVault.balances](src/vulnerable/VulnerableVault.sol#L7) can be used in cross function reentrancies:\n\t- [VulnerableVault.balances](src/vulnerable/VulnerableVault.sol#L7)\n\t- [VulnerableVault.deposit()](src/vulnerable/VulnerableVault.sol#L9-L11)\n\t- [VulnerableVault.withdraw()](src/vulnerable/VulnerableVault.sol#L13-L19)\n",
+        "first_markdown_element": "src/vulnerable/VulnerableVault.sol#L13-L19",
+        "id": "9037896f2b8363405a2a6da4b3dd6f4754c25277c72c90f46daec087e031d194",
+        "check": "reentrancy-eth",
+        "impact": "High",
+        "confidence": "Medium",
+        "reference": "https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1"
+      },
+      {
+        "elements": [
+          {
+            "type": "function",
+            "name": "withdraw",
+            "source_mapping": {
+              "start": 341,
+              "length": 340,
+              "filename_relative": "src/vulnerable/VulnerableVault.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+              "filename_short": "src/vulnerable/VulnerableVault.sol",
+              "is_dependency": false,
+              "lines": [
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19
+              ],
+              "starting_column": 5,
+              "ending_column": 6
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "contract",
+                "name": "VulnerableVault",
+                "source_mapping": {
+                  "start": 168,
+                  "length": 515,
+                  "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                  "filename_short": "src/vulnerable/VulnerableVault.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20
+                  ],
+                  "starting_column": 1,
+                  "ending_column": 2
+                }
+              },
+              "signature": "withdraw()"
+            }
+          },
+          {
+            "type": "node",
+            "name": "(ok,None) = msg.sender.call{value: amount}()",
+            "source_mapping": {
+              "start": 479,
+              "length": 48,
+              "filename_relative": "src/vulnerable/VulnerableVault.sol",
+              "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+              "filename_short": "src/vulnerable/VulnerableVault.sol",
+              "is_dependency": false,
+              "lines": [
+                16
+              ],
+              "starting_column": 9,
+              "ending_column": 57
+            },
+            "type_specific_fields": {
+              "parent": {
+                "type": "function",
+                "name": "withdraw",
+                "source_mapping": {
+                  "start": 341,
+                  "length": 340,
+                  "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                  "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                  "filename_short": "src/vulnerable/VulnerableVault.sol",
+                  "is_dependency": false,
+                  "lines": [
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19
+                  ],
+                  "starting_column": 5,
+                  "ending_column": 6
+                },
+                "type_specific_fields": {
+                  "parent": {
+                    "type": "contract",
+                    "name": "VulnerableVault",
+                    "source_mapping": {
+                      "start": 168,
+                      "length": 515,
+                      "filename_relative": "src/vulnerable/VulnerableVault.sol",
+                      "filename_absolute": "/home/chinmay/microscope/src/vulnerable/VulnerableVault.sol",
+                      "filename_short": "src/vulnerable/VulnerableVault.sol",
+                      "is_dependency": false,
+                      "lines": [
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19,
+                        20
+                      ],
+                      "starting_column": 1,
+                      "ending_column": 2
+                    }
+                  },
+                  "signature": "withdraw()"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Low level call in VulnerableVault.withdraw() (src/vulnerable/VulnerableVault.sol#13-19):\n\t- (ok,None) = msg.sender.call{value: amount}() (src/vulnerable/VulnerableVault.sol#16)\n",
+        "markdown": "Low level call in [VulnerableVault.withdraw()](src/vulnerable/VulnerableVault.sol#L13-L19):\n\t- [(ok,None) = msg.sender.call{value: amount}()](src/vulnerable/VulnerableVault.sol#L16)\n",
+        "first_markdown_element": "src/vulnerable/VulnerableVault.sol#L13-L19",
+        "id": "1e53286a82a10b6404ff2604630745314e540ed8411b4cd1a83afdc240b0652b",
+        "check": "low-level-calls",
+        "impact": "Informational",
+        "confidence": "High",
+        "reference": "https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls"
+      }
+    ]
+  }
+}
